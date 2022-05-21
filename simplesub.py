@@ -18,15 +18,18 @@ Batt2timeout = 15
 def send_blynk(batt, received_data, refresh = True):
     global Batt1timer
     global Batt2timer
-    print(requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v14=1"))
-    if batt == 1:
-        Batt1timer = time.time()
-        print(requests.get("https://blynk.cloud/external/api/batch/update?token=" + BLYNK_AUTH_TOKEN + "&v6=" + received_data[0] + "&v7=" + received_data[1] + "&v8=" + received_data[2] + "&v9=" + received_data[3] + "&v10=" + received_data[4] + "&v11=" + received_data[5] + "&v12=" + received_data[6]))
-        print("updated batt 1")
-    elif batt == 2:
-        Batt2timer = time.time()
-        print(requests.get("https://blynk.cloud/external/api/batch/update?token=" + BLYNK_AUTH_TOKEN + "&v13=" + received_data[0] + "&v0=" + received_data[1] + "&v1=" + received_data[2] + "&v2=" + received_data[3] + "&v3=" + received_data[4] + "&v4=" + received_data[5] + "&v5=" + received_data[6]))
-        print("updated batt 2")
+    try:
+        print(requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v14=1"))
+        if batt == 1:
+            Batt1timer = time.time()
+            print(requests.get("https://blynk.cloud/external/api/batch/update?token=" + BLYNK_AUTH_TOKEN + "&v6=" + received_data[0] + "&v7=" + received_data[1] + "&v8=" + received_data[2] + "&v9=" + received_data[3] + "&v10=" + received_data[4] + "&v11=" + received_data[5] + "&v12=" + received_data[6]))
+            print("updated batt 1")
+        elif batt == 2:
+            Batt2timer = time.time()
+            print(requests.get("https://blynk.cloud/external/api/batch/update?token=" + BLYNK_AUTH_TOKEN + "&v13=" + received_data[0] + "&v0=" + received_data[1] + "&v1=" + received_data[2] + "&v2=" + received_data[3] + "&v3=" + received_data[4] + "&v4=" + received_data[5] + "&v5=" + received_data[6]))
+            print("updated batt 2")
+    except:
+        print("No internet connection")
 
 def on_message(client, userdata, message):
     received_data = str(message.payload.decode("utf-8"))
