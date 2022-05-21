@@ -33,6 +33,7 @@ def send_blynk(batt, received_data, refresh = True):
         print("No internet connection")
 
 def on_message(client, userdata, message):
+    #receive the message and make file if doesnt exist
     received_data = str(message.payload.decode("utf-8"))
     received_data = received_data.split(",")
     file_name = "/home/pi/DataFiles/" + received_data[0] + ".csv"
@@ -42,20 +43,24 @@ def on_message(client, userdata, message):
         csv_writer.writerow(["timestamp","voltage","current","percentage","temp1","temp2","temp3","chargemos","dischargemos","MaxCellVNum","MaxCellV","MinCellVNum","MinCellV"])
     except:
         print("file already exists")
+        
+    #open file to append data
     my_data_file = open(file_name, 'a')
     csv_writer = csv.writer(my_data_file, delimiter=',')
     csv_data = [datetime.now().strftime('%d-%b-%Y, %H:%M:%S')] + received_data[1:]
     print("message received", csv_data)
-    
     csv_writer.writerow(csv_data)
     my_data_file.flush()
     
+    #if battery already accounted for in battery list, send to blynk and refresh timer
     if received_data[0] in BatteryList:
         print("batt already here")
         if BatteryList.index(received_data[0]) == 0:
             send_blynk(1,received_data)
         else:
             send_blynk(2,received_data)
+    
+    #if battery does not exist, check if battery list has space, otherwise remove the most outdated battery
     else:
         try:
             print("entering add new batt")
