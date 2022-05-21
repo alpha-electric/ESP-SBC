@@ -29,25 +29,13 @@ def send_blynk(batt, received_data, refresh = True):
         if refresh:
             Batt1timedout = False
             Batt1timer = time.time()
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v6=" + received_data[0])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v7=" + received_data[1])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v8=" + received_data[2])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v9=" + received_data[3])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v10=" + received_data[4])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v11=" + received_data[5])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v12=" + received_data[6])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v6=" + received_data[0] + "&v7=" + received_data[1] + "&v8=" + received_data[2] + "&v9=" + received_data[3] + "&v10=" + received_data[4] + "&v11=" + received_data[5] + "&v12=" + received_data[6])
         print("updated batt 1")
     elif batt == 2:
         if refresh:
             Batt2timedout = False
             Batt2timer = time.time()
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v13=" + received_data[0])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v0=" + received_data[1])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v1=" + received_data[2])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v2=" + received_data[3])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v3=" + received_data[4])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v4=" + received_data[5])
-        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v5=" + received_data[6])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v13=" + received_data[0] + "&v0=" + received_data[1] + "&v1=" + received_data[2] + "&v2=" + received_data[3] + "&v3=" + received_data[4] + "&v4=" + received_data[5] + "&v5=" + received_data[6])
         print("updated batt 2")
 
 def on_message(client, userdata, message):
