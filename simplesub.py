@@ -1,33 +1,123 @@
 import paho.mqtt.client as mqttClient
 import csv
 import requests
+import time
+
+BLYNK_TEMPLATE_ID = "TMPLhNGEvK6P"
+BLYNK_DEVICE_NAME = "Alpha Buggy 1"
+BLYNK_AUTH_TOKEN = "ouV8pw6v719r6S-c3ru5MBi8bGYR_UYt"
+
+BatteryList = ["",""]
+global Batt1timer
+Batt1timer = time.time()
+Batt1timeout = 15
+global Batt2timer
+Batt2timer = time.time()
+Batt2timeout = 15
+
+global Batt1timedout
+global Batt2Timedout
+Batt1timedout = False
+Batt2timedout = False
+
+def send_blynk(batt, received_data, refresh = True):
+    global Batt1timedout
+    global Batt2timedout
+    global Batt1timer
+    global Batt2timer
+    if batt == 1:
+        if refresh:
+            Batt1timedout = False
+            Batt1timer = time.time()
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v6=" + received_data[0])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v7=" + received_data[1])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v8=" + received_data[2])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v9=" + received_data[3])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v10=" + received_data[4])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v11=" + received_data[5])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v12=" + received_data[6])
+        print("updated batt 1")
+    elif batt == 2:
+        if refresh:
+            Batt2timedout = False
+            Batt2timer = time.time()
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v13=" + received_data[0])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v0=" + received_data[1])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v1=" + received_data[2])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v2=" + received_data[3])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v3=" + received_data[4])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v4=" + received_data[5])
+        requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v5=" + received_data[6])
+        print("updated batt 2")
 
 def on_message(client, userdata, message):
-	global recieved_data
-	recieved_data = str(message.payload.decode("utf-8"))
-	print("message received", recieved_data)
-	
-	csv_writer.writerow([recieved_data])
-	my_data_file.flush()
-	# info = "{\"Recieved_data\":" + str(1) + "}"
-	# print(info)
-	# r = requests.post("http://18.140.68.118/logging", data=info, headers={"Content-Type":"text/plain"})
-	# print(r.status_code)
-	# print(r.reason)
-	# print(r.text)
+    received_data = str(message.payload.decode("utf-8"))
+    received_data = received_data.split(",")
+    file_name = "/home/pi/DataFiles/" + received_data[0] + ".csv"
+    try:
+        my_data_file = open(file_name, 'x')
+        csv_writer = csv.writer(my_data_file, delimiter=',')
+        csv_writer.writerow(["timestamp","voltage","current","percentage","temp1","temp2","temp3","chargemos","dischargemos","MaxCellVNum","MaxCellV","MinCellVNum","MinCellV"])
+    except:
+        print("file already exists")
+    my_data_file = open(file_name, 'a')
+    csv_writer = csv.writer(my_data_file, delimiter=',')
+    
+    print("message received", received_data[1:])
+    
+    csv_writer.writerow(received_data[1:])
+    my_data_file.flush()
+    
+    if received_data[0] in BatteryList:
+        print("batt already here")
+        if BatteryList.index(received_data[0]) == 0:
+            send_blynk(1,received_data)
+        else:
+            send_blynk(2,received_data)
+    else:
+        try:
+            print("entering add new batt")
+            emptyindex = BatteryList.index("")
+            if emptyindex == 0:
+                BatteryList[0] = received_data[0]
+                send_blynk(1,received_data)
+            elif emptyindex == 1:
+                print("adding battery 2")
+                BatteryList[1] = received_data[0]
+                send_blynk(2,received_data)
+        except:                
+            if Batt2timer > Batt1timer:
+                BatteryList[0] = received_data[0]
+                send_blynk(1,received_data)
+            else:
+                BatteryList[1] = received_data[0]
+                send_blynk(2,received_data)
+        
+    
+    # info = "{\"received_data\":" + str(1) + "}"
+    # print(info)
+    # r = requests.post("http://18.140.68.118/logging", data=info, headers={"Content-Type":"text/plain"})
+    # print(r.status_code)
+    # print(r.reason)
+    # print(r.text)
 
 hostname = "192.168.30.50"
 topic_name = "esp32/output"
-file_name = "/home/pi/testing.csv"
 
 client = mqttClient.Client("Alpha1")
 client.connect(hostname)
 client.loop_start()
 client.subscribe(topic_name)
-
-my_data_file = open(file_name, 'w')
-csv_writer = csv.writer(my_data_file, delimiter=',')
+client.on_message = on_message
 
 while True:
-	client.on_message = on_message
-	
+    if Batt1timedout == False and time.time() - Batt1timer >= Batt1timeout:
+        Batt1timedout = True
+        send_blynk(1,["Disconnected","0","0","0","0","0","0","0","0","0","0","0","0"],False)
+        BatteryList[0] = ""
+    if Batt2timedout == False and time.time() - Batt2timer >= Batt2timeout:
+        Batt2timedout = True
+        send_blynk(2,["Disconnected","0","0","0","0","0","0","0","0","0","0","0","0"],False)
+        BatteryList[1] = ""
+    
+    
