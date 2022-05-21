@@ -10,23 +10,31 @@ BLYNK_AUTH_TOKEN = "ouV8pw6v719r6S-c3ru5MBi8bGYR_UYt"
 
 BatteryList = ["",""]
 global Batt1timer
+global Batt1timedout
+Batt1timedout = False
 Batt1timer = time.time()
 Batt1timeout = 15
 global Batt2timer
+global Batt2timedout
+Batt2timedout = False
 Batt2timer = time.time()
 Batt2timeout = 15
 
 def send_blynk(batt, received_data, refresh = True):
     global Batt1timer
     global Batt2timer
+    global Batt1timedout
+    global Batt2timedout
     try:
         print(requests.get("https://blynk.cloud/external/api/update?token=" + BLYNK_AUTH_TOKEN + "&v14=1"))
         if batt == 1:
             Batt1timer = time.time()
+            Batt1timedout = False
             print(requests.get("https://blynk.cloud/external/api/batch/update?token=" + BLYNK_AUTH_TOKEN + "&v6=" + received_data[0] + "&v7=" + received_data[1] + "&v8=" + received_data[2] + "&v9=" + received_data[3] + "&v10=" + received_data[4] + "&v11=" + received_data[5] + "&v12=" + received_data[6]))
             print("updated batt 1")
         elif batt == 2:
             Batt2timer = time.time()
+            Batt2timedout = False
             print(requests.get("https://blynk.cloud/external/api/batch/update?token=" + BLYNK_AUTH_TOKEN + "&v13=" + received_data[0] + "&v0=" + received_data[1] + "&v1=" + received_data[2] + "&v2=" + received_data[3] + "&v3=" + received_data[4] + "&v4=" + received_data[5] + "&v5=" + received_data[6]))
             print("updated batt 2")
     except:
@@ -98,9 +106,11 @@ client.subscribe(topic_name)
 client.on_message = on_message
 
 while True:
-    if time.time() - Batt1timer >= Batt1timeout:
+    if Batt1timedout == False and time.time() - Batt1timer >= Batt1timeout:
+        Batt1timedout = True
         BatteryList[0] = ""
-    if time.time() - Batt2timer >= Batt2timeout:
+    if Batt2timedout == False and time.time() - Batt2timer >= Batt2timeout:
+        Batt2timedout = True
         BatteryList[1] = ""
     
     
