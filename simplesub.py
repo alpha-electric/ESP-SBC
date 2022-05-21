@@ -2,6 +2,7 @@ import paho.mqtt.client as mqttClient
 import csv
 import requests
 import time
+from datetime import datetime
 
 BLYNK_TEMPLATE_ID = "TMPLhNGEvK6P"
 BLYNK_DEVICE_NAME = "Alpha Buggy 1"
@@ -43,10 +44,10 @@ def on_message(client, userdata, message):
         print("file already exists")
     my_data_file = open(file_name, 'a')
     csv_writer = csv.writer(my_data_file, delimiter=',')
+    csv_data = [datetime.now().strftime('%d-%b-%Y, %H:%M:%S')] + received_data[1:]
+    print("message received", csv_data)
     
-    print("message received", received_data[1:])
-    
-    csv_writer.writerow(received_data[1:])
+    csv_writer.writerow(csv_data)
     my_data_file.flush()
     
     if received_data[0] in BatteryList:
