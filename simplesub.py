@@ -59,6 +59,7 @@ def on_message(client, userdata, message):
     print("message received", csv_data)
     csv_writer.writerow(csv_data)
     my_data_file.flush()
+    my_data_file.close()
     
     #if battery already accounted for in battery list, send to blynk and refresh timer
     if received_data[0] in BatteryList:
@@ -112,5 +113,6 @@ while True:
     if Batt2timedout == False and time.time() - Batt2timer >= Batt2timeout:
         Batt2timedout = True
         BatteryList[1] = ""
+    time.sleep(0.5)
     
     
