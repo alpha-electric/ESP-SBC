@@ -113,6 +113,3 @@ while True:
     if Batt2timedout == False and time.time() - Batt2timer >= Batt2timeout:
         Batt2timedout = True
         BatteryList[1] = ""
-    time.sleep(0.5)
-    
-    
