@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 BLYNK_TEMPLATE_ID = "TMPLhNGEvK6P"
-BLYNK_DEVICE_NAME = "Alpha Buggy 1"
+BLYNK_DEVICE_NAME = "Alpha Buggy 001"
 BLYNK_AUTH_TOKEN = "ouV8pw6v719r6S-c3ru5MBi8bGYR_UYt"
 
 BatteryList = ["",""]
@@ -44,7 +44,7 @@ def on_message(client, userdata, message):
     #receive the message and make file if doesnt exist
     received_data = str(message.payload.decode("utf-8"))
     received_data = received_data.split(",")
-    file_name = "/home/pi/DataFiles/" + received_data[0] + ".csv"
+    file_name = "/home/pi/DataFiles/" + received_data[0] + "-" + BLYNK_DEVICE_NAME + ".csv"
     try:
         my_data_file = open(file_name, 'x')
         csv_writer = csv.writer(my_data_file, delimiter=',')
