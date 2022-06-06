@@ -5,8 +5,8 @@ import time
 from datetime import datetime
 
 BLYNK_TEMPLATE_ID = "TMPLhNGEvK6P"
-BLYNK_DEVICE_NAME = "Alpha Buggy 001"
-BLYNK_AUTH_TOKEN = "ouV8pw6v719r6S-c3ru5MBi8bGYR_UYt"
+BLYNK_DEVICE_NAME = "Hive 001"
+BLYNK_AUTH_TOKEN = "0dYAueAsO0G0SVWsoyGc2MoUxrSmHHpV"
 
 BatteryList = ["",""]
 global Batt1timer
@@ -20,7 +20,25 @@ Batt2timedout = False
 Batt2timer = time.time()
 Batt2timeout = 15
 
-def send_blynk(batt, received_data, refresh = True):
+def send_backend(received_data):
+    print(requests.post("http://api.alphaelectrics.co/logging",
+                        data={"battery_id": received_data[0]
+                      ,"location": BLYNK_DEVICE_NAME
+                      ,"timestamp": datetime.now().strftime('%d-%b-%Y, %H:%M:%S')
+                      ,"voltage": received_data[1] 
+                      ,"current": received_data[2]  
+                      ,"percentage": received_data[3]  
+                      ,"temp1": received_data[4]  
+                      ,"temp2": received_data[5]  
+                      ,"temp3": received_data[6]  
+                      ,"Chargemos": received_data[7]  
+                      ,"Dischargemos": received_data[8]  
+                      ,"MaxCellVnum": received_data[9]  
+                      ,"MaxCellV": received_data[10]  
+                      ,"minCellVNum": received_data[11]  
+                      ,"minCellV": received_data[12]}).text)
+
+def send_blynk(batt, received_data):
     global Batt1timer
     global Batt2timer
     global Batt1timedout
@@ -60,33 +78,34 @@ def on_message(client, userdata, message):
     my_data_file.flush()
     my_data_file.close()
     
-    #if battery already accounted for in battery list, send to blynk and refresh timer
-    if received_data[0] in BatteryList:
-        print("batt already here")
-        if BatteryList.index(received_data[0]) == 0:
-            send_blynk(1,received_data)
-        else:
-            send_blynk(2,received_data)
-    
-    #if battery does not exist, check if battery list has space, otherwise remove the most outdated battery
-    else:
-        try:
-            print("entering add new batt")
-            emptyindex = BatteryList.index("")
-            if emptyindex == 0:
-                BatteryList[0] = received_data[0]
-                send_blynk(1,received_data)
-            elif emptyindex == 1:
-                print("adding battery 2")
-                BatteryList[1] = received_data[0]
-                send_blynk(2,received_data)
-        except:                
-            if Batt2timer > Batt1timer:
-                BatteryList[0] = received_data[0]
-                send_blynk(1,received_data)
-            else:
-                BatteryList[1] = received_data[0]
-                send_blynk(2,received_data)
+    send_backend(received_data)
+#     #if battery already accounted for in battery list, send to blynk and refresh timer
+#     if received_data[0] in BatteryList:
+#         print("batt already here")
+#         if BatteryList.index(received_data[0]) == 0:
+#             send_blynk(1,received_data)
+#         else:
+#             send_blynk(2,received_data)
+#     
+#     #if battery does not exist, check if battery list has space, otherwise remove the most outdated battery
+#     else:
+#         try:
+#             print("entering add new batt")
+#             emptyindex = BatteryList.index("")
+#             if emptyindex == 0:
+#                 BatteryList[0] = received_data[0]
+#                 send_blynk(1,received_data)
+#             elif emptyindex == 1:
+#                 print("adding battery 2")
+#                 BatteryList[1] = received_data[0]
+#                 send_blynk(2,received_data)
+#         except:                
+#             if Batt2timer > Batt1timer:
+#                 BatteryList[0] = received_data[0]
+#                 send_blynk(1,received_data)
+#             else:
+#                 BatteryList[1] = received_data[0]
+#                 send_blynk(2,received_data)
         
     
     # info = "{\"received_data\":" + str(1) + "}"
@@ -112,3 +131,4 @@ while True:
     if Batt2timedout == False and time.time() - Batt2timer >= Batt2timeout:
         Batt2timedout = True
         BatteryList[1] = ""
+
