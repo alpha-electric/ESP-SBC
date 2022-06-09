@@ -4,64 +4,38 @@ import requests
 import time
 from datetime import datetime
 
-BLYNK_TEMPLATE_ID = "TMPLhNGEvK6P"
-BLYNK_DEVICE_NAME = "Hive 001"
-BLYNK_AUTH_TOKEN = "0dYAueAsO0G0SVWsoyGc2MoUxrSmHHpV"
+LOCATION = "Hive 001"
+LIVEDATADELAY = 10
+battery_dict = {}
 
-BatteryList = ["",""]
-global Batt1timer
-global Batt1timedout
-Batt1timedout = False
-Batt1timer = time.time()
-Batt1timeout = 15
-global Batt2timer
-global Batt2timedout
-Batt2timedout = False
-Batt2timer = time.time()
-Batt2timeout = 15
 
 def send_backend(received_data):
     print(requests.post("http://api.alphaelectrics.co/logging",
-                        data={"battery_id": received_data[0]
-                      ,"location": BLYNK_DEVICE_NAME
-                      ,"timestamp": datetime.now().strftime('%d-%b-%Y, %H:%M:%S')
-                      ,"voltage": received_data[1] 
-                      ,"current": received_data[2]  
-                      ,"percentage": received_data[3]  
-                      ,"temp1": received_data[4]  
-                      ,"temp2": received_data[5]  
-                      ,"temp3": received_data[6]  
-                      ,"Chargemos": received_data[7]  
-                      ,"Dischargemos": received_data[8]  
-                      ,"MaxCellVnum": received_data[9]  
-                      ,"MaxCellV": received_data[10]  
-                      ,"minCellVNum": received_data[11]  
-                      ,"minCellV": received_data[12]}).text)
+                        data={"id": received_data[0]
+                      ,"loc": LOCATION
+                      ,"ts": datetime.now().strftime('%d-%b-%Y, %H:%M:%S')
+                      ,"v": received_data[1] 
+                      ,"c": received_data[2]  
+                      ,"p": received_data[3]  
+                      ,"t1": received_data[4]  
+                      ,"t2": received_data[5]  
+                      ,"t3": received_data[6]  
+                      ,"cm": received_data[7]  
+                      ,"dm": received_data[8]  
+                      ,"mxcvn": received_data[9]  
+                      ,"mxcv": received_data[10]  
+                      ,"mncvn": received_data[11]  
+                      ,"mncv": received_data[12]}).text)
 
-def send_blynk(batt, received_data):
-    global Batt1timer
-    global Batt2timer
-    global Batt1timedout
-    global Batt2timedout
-    try:
-        if batt == 1:
-            Batt1timer = time.time()
-            Batt1timedout = False
-            print(requests.get("https://sgp1.blynk.cloud/external/api/batch/update?token=" + BLYNK_AUTH_TOKEN + "&v6=" + received_data[0] + "&v7=" + received_data[1] + "&v8=" + received_data[2] + "&v9=" + received_data[3] + "&v10=" + received_data[4] + "&v11=" + received_data[5] + "&v12=" + received_data[6] + "&v14=1").text)
-            print("updated batt 1")
-        elif batt == 2:
-            Batt2timer = time.time()
-            Batt2timedout = False
-            print(requests.get("https://sgp1.blynk.cloud/external/api/batch/update?token=" + BLYNK_AUTH_TOKEN + "&v13=" + received_data[0] + "&v0=" + received_data[1] + "&v1=" + received_data[2] + "&v2=" + received_data[3] + "&v3=" + received_data[4] + "&v4=" + received_data[5] + "&v5=" + received_data[6] + "&v14=1").text)
-            print("updated batt 2")
-    except:
-        print("No internet connection")
 
 def on_message(client, userdata, message):
     #receive the message and make file if doesnt exist
     received_data = str(message.payload.decode("utf-8"))
     received_data = received_data.split(",")
-    file_name = "/home/pi/DataFiles/" + received_data[0] + "-" + BLYNK_DEVICE_NAME + ".csv"
+    
+    batt_name = received_data[0]
+    
+    file_name = "/home/pi/DataFiles/" + batt_name + "-" + LOCATION + ".csv"
     try:
         my_data_file = open(file_name, 'x')
         csv_writer = csv.writer(my_data_file, delimiter=',')
@@ -78,42 +52,17 @@ def on_message(client, userdata, message):
     my_data_file.flush()
     my_data_file.close()
     
-    send_backend(received_data)
-#     #if battery already accounted for in battery list, send to blynk and refresh timer
-#     if received_data[0] in BatteryList:
-#         print("batt already here")
-#         if BatteryList.index(received_data[0]) == 0:
-#             send_blynk(1,received_data)
-#         else:
-#             send_blynk(2,received_data)
-#     
-#     #if battery does not exist, check if battery list has space, otherwise remove the most outdated battery
-#     else:
-#         try:
-#             print("entering add new batt")
-#             emptyindex = BatteryList.index("")
-#             if emptyindex == 0:
-#                 BatteryList[0] = received_data[0]
-#                 send_blynk(1,received_data)
-#             elif emptyindex == 1:
-#                 print("adding battery 2")
-#                 BatteryList[1] = received_data[0]
-#                 send_blynk(2,received_data)
-#         except:                
-#             if Batt2timer > Batt1timer:
-#                 BatteryList[0] = received_data[0]
-#                 send_blynk(1,received_data)
-#             else:
-#                 BatteryList[1] = received_data[0]
-#                 send_blynk(2,received_data)
-        
+    print("data came in")
     
-    # info = "{\"received_data\":" + str(1) + "}"
-    # print(info)
-    # r = requests.post("http://18.140.68.118/logging", data=info, headers={"Content-Type":"text/plain"})
-    # print(r.status_code)
-    # print(r.reason)
-    # print(r.text)
+    if battery_dict.get(batt_name) == None:
+        battery_dict[batt_name] = time.time()
+        print("created new battery")
+        send_backend(received_data)
+    elif time.time() - battery_dict[batt_name] >= LIVEDATADELAY:
+        send_backend(received_data)
+        print("sending live data")
+        battery_dict[batt_name] = time.time()
+
 
 hostname = "192.168.30.50"
 topic_name = "esp32/output"
@@ -125,10 +74,6 @@ client.subscribe(topic_name)
 client.on_message = on_message
 
 while True:
-    if Batt1timedout == False and time.time() - Batt1timer >= Batt1timeout:
-        Batt1timedout = True
-        BatteryList[0] = ""
-    if Batt2timedout == False and time.time() - Batt2timer >= Batt2timeout:
-        Batt2timedout = True
-        BatteryList[1] = ""
+    pass
+    
 
