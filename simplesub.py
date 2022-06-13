@@ -4,8 +4,8 @@ import requests
 import time
 from datetime import datetime
 
-LOCATION = "Hive 001"
-LIVEDATADELAY = 10
+LOCATION = "Buggy 004"
+LIVEDATADELAY = 30
 battery_dict = {}
 
 
