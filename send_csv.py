@@ -6,7 +6,7 @@ from os import listdir
 Dir = "/home/pi/DataFiles"
 
 FileList = listdir(Dir)
-url = "http://api.alphaelectrics.co/csv"
+url = "http://api.alphaelectrics.app/csv"
 
 for i in FileList:
     tries = 0
