@@ -4,7 +4,8 @@ import requests
 import time
 from datetime import datetime
 
-LOCATION = "Buggy 113"
+
+LOCATION = "Buggy TEST"
 LIVEDATADELAY = 30
 battery_dict = {}
 
@@ -13,7 +14,7 @@ def send_backend(received_data):
     print(requests.post("http://api.alphaelectrics.app/logging",
                         data={"id": received_data[0]
                       ,"loc": LOCATION
-                      ,"ts": datetime.now().strftime('%d-%b-%Y, %H:%M:%S')
+                      ,"ts": time.time()
                       ,"v": received_data[1] 
                       ,"c": received_data[2]  
                       ,"p": received_data[3]  
