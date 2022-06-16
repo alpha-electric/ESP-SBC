@@ -26,7 +26,7 @@ import dbus
 from advertisement import Advertisement
 from service import Application
 
-ALPHANAME = "AlphaHive001"
+ALPHANAME = "AlphaBuggy113"
 
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
 NOTIFY_TIMEOUT = 5000
