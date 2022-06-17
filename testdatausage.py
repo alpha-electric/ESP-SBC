@@ -13,22 +13,22 @@ topic_name = "esp"
 
 
 def on_message(client, userdata, message):
-    print(int.from_bytes(message.payload[0:2], byteorder = "big", signed = False))
-    print(chr(int.from_bytes(message.payload[2:3], byteorder = "big", signed = False)))
-    print(int.from_bytes(message.payload[3:5], byteorder = "big", signed = False))
-    print(int.from_bytes(message.payload[5:9], byteorder = "big", signed = False))
-    print(struct.unpack("f",message.payload[9:13]))
-    print(struct.unpack("f",message.payload[13:17]))
-    print(struct.unpack("f",message.payload[17:21]))
-    print(struct.unpack("f",message.payload[21:25]))
-    print(struct.unpack("f",message.payload[25:29]))
-    print(struct.unpack("f",message.payload[29:33]))
-    print(int.from_bytes(message.payload[33:34], byteorder = "big", signed = False))
-    print(int.from_bytes(message.payload[34:35], byteorder = "big", signed = False))
-    print(struct.unpack("f",message.payload[35:39]))
-    print(int.from_bytes(message.payload[39:40], byteorder = "big", signed = False))
-    print(struct.unpack("f",message.payload[40:44]))
-    print(int.from_bytes(message.payload[44:45], byteorder = "big", signed = False))
+    print(int.from_bytes(message.payload[0:2], byteorder = "big", signed = False)) #batt id 
+    print(chr(int.from_bytes(message.payload[2:3], byteorder = "big", signed = False))) #location char
+    print(int.from_bytes(message.payload[3:5], byteorder = "big", signed = False)) #location number
+    print(int.from_bytes(message.payload[5:9], byteorder = "big", signed = False)) #timestamp
+    print(struct.unpack("f",message.payload[9:13])) #voltage
+    print(struct.unpack("f",message.payload[13:17])) #current
+    print(struct.unpack("f",message.payload[17:21])) #percentage
+    print(struct.unpack("f",message.payload[21:25])) #t1
+    print(struct.unpack("f",message.payload[25:29])) #t2
+    print(struct.unpack("f",message.payload[29:33])) #t3
+    print(int.from_bytes(message.payload[33:34], byteorder = "big", signed = False)) #cm
+    print(int.from_bytes(message.payload[34:35], byteorder = "big", signed = False)) #dm
+    print(struct.unpack("f",message.payload[35:39])) #mxcv
+    print(int.from_bytes(message.payload[39:40], byteorder = "big", signed = False)) #mxcvn
+    print(struct.unpack("f",message.payload[40:44])) #mncv
+    print(int.from_bytes(message.payload[44:45], byteorder = "big", signed = False)) #mncvn
     
 
 
