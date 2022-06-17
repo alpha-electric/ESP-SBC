@@ -27,7 +27,7 @@ from advertisement import Advertisement
 from service import Application
 
 
-ALPHANAME = "AlphaBuggy004"
+ALPHANAME = "AlphaBuggy113"
 
 
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"

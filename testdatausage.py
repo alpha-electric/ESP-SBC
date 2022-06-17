@@ -97,3 +97,19 @@ for i in range(86400):
 #                       ,"mxcv": 9  
 #                       ,"mncvn": 10  
 #                       ,"mncv": 11}).text)
+# print(requests.post("http://api.alphaelectrics.app/logging",
+#                         data=str(received_data[0]) +
+#                       "," + LOCATION +
+#                       "," + str(int(time.time())) +
+#                       "," + str(received_data[1]) +
+#                       "," + str(received_data[2]) + 
+#                       "," + str(received_data[3]) +
+#                       "," + str(received_data[4]) + 
+#                       "," + str(received_data[5]) + 
+#                       "," + str(received_data[6]) + 
+#                       "," + str(received_data[7]) + 
+#                       "," + str(received_data[8]) + 
+#                       "," + str(received_data[9]) + 
+#                       "," + str(received_data[10]) +
+#                       "," + str(received_data[11]) + 
+#                       "," + str(received_data[12])).text)
