@@ -16,28 +16,28 @@ CSV_URL = os.getenv("CSV_URL")
 DATA_DIR = os.getenv("DATA_DIR")
 RPI_NAME = os.getenv("RPI_NAME")
 
-LIVEDATADELAY = 30
+LIVEDATADELAY = 1
 battery_dict = {}
 
 
 
 def send_backend(received_data):
     print(requests.post(LOGGING_URL,
-                        data={"id": received_data[0]
-                      ,"loc": LOCATION
-                      ,"ts": time.time()
-                      ,"v": received_data[1] 
-                      ,"c": received_data[2]  
-                      ,"p": received_data[3]  
-                      ,"t1": received_data[4]  
-                      ,"t2": received_data[5]  
-                      ,"t3": received_data[6]  
-                      ,"cm": received_data[7]  
-                      ,"dm": received_data[8]  
-                      ,"mxcvn": received_data[9]  
-                      ,"mxcv": received_data[10]  
-                      ,"mncvn": received_data[11]  
-                      ,"mncv": received_data[12]}).text)
+                        data=str(received_data[0]) +
+                      "," + LOCATION +
+                      "," + str(int(time.time())) +
+                      "," + str(received_data[1]) +
+                      "," + str(received_data[2]) + 
+                      "," + str(received_data[3]) +
+                      "," + str(received_data[4]) + 
+                      "," + str(received_data[5]) + 
+                      "," + str(received_data[6]) + 
+                      "," + str(received_data[7]) + 
+                      "," + str(received_data[8]) + 
+                      "," + str(received_data[9]) + 
+                      "," + str(received_data[10]) +
+                      "," + str(received_data[11]) + 
+                      "," + str(received_data[12]),headers={'Content-Type': 'text/plain'}).text)
 
 
 def on_message(client, userdata, message):
