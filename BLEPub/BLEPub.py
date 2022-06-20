@@ -25,9 +25,12 @@ import dbus
 
 from advertisement import Advertisement
 from service import Application
+from dotenv import load_dotenv
+from pathlib import Path
 
 
-ALPHANAME = "AlphaBuggy113"
+dotenv_path = Path("/home/pi/ESP-SBC/iot.env")
+load_dotenv(dotenv_path = dotenv_path)
 
 
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
@@ -36,7 +39,7 @@ NOTIFY_TIMEOUT = 5000
 class BuggyAdvertisement(Advertisement):
     def __init__(self, index):
         Advertisement.__init__(self, index, "peripheral")
-        self.add_local_name(ALPHANAME)
+        self.add_local_name(RPI_NAME)
         self.include_tx_power = True
 
 

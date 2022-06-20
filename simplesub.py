@@ -3,15 +3,20 @@ import csv
 import requests
 import time
 from datetime import datetime
+from dotenv import load_dotenv
+from pathlib import Path
+
+dotenv_path = Path("/home/pi/ESP-SBC/iot.env")
+load_dotenv(dotenv_path = dotenv_path)
 
 
-LOCATION = "Buggy TEST"
 LIVEDATADELAY = 30
 battery_dict = {}
 
 
+
 def send_backend(received_data):
-    print(requests.post("http://api.alphaelectrics.app/logging",
+    print(requests.post(LOGGING_URL,
                         data={"id": received_data[0]
                       ,"loc": LOCATION
                       ,"ts": time.time()
@@ -36,7 +41,7 @@ def on_message(client, userdata, message):
     
     batt_name = received_data[0]
     
-    file_name = "/home/pi/DataFiles/" + batt_name + "-" + LOCATION + ".csv"
+    file_name = DATA_DIR + batt_name + "-" + LOCATION + ".csv"
     try:
         my_data_file = open(file_name, 'x')
         csv_writer = csv.writer(my_data_file, delimiter=',')

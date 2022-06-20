@@ -1,19 +1,21 @@
 import requests
 import os
 from os import listdir
+from dotenv import load_dotenv
+from pathlib import Path
+
+dotenv_path = Path("/home/pi/ESP-SBC/iot.env")
+load_dotenv(dotenv_path = dotenv_path)
 
 
-Dir = "/home/pi/DataFiles"
-
-FileList = listdir(Dir)
-url = "http://api.alphaelectrics.app/csv"
+FileList = listdir(DATA_DIR)
 
 for i in FileList:
     tries = 0
     while tries < 5:
         try:
-            file = {'file': open(Dir + "/" + i, "rb")}
-            r = requests.post(url, files=file)
+            file = {'file': open(DATA_DIR + "/" + i, "rb")}
+            r = requests.post(CSV_URL, files=file)
             print(r.status_code)
             print(r.text)
             if r.status_code == 200:
