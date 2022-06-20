@@ -16,7 +16,7 @@ CSV_URL = os.getenv("CSV_URL")
 DATA_DIR = os.getenv("DATA_DIR")
 RPI_NAME = os.getenv("RPI_NAME")
 
-LIVEDATADELAY = 1
+LIVEDATADELAY = 10
 battery_dict = {}
 
 
