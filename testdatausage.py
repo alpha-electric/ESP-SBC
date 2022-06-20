@@ -3,12 +3,19 @@ import csv
 import struct
 import requests
 import time
+import os
 from datetime import datetime
 from dotenv import load_dotenv
 from pathlib import Path
 
 dotenv_path = Path("/home/pi/ESP-SBC/iot.env")
 load_dotenv(dotenv_path = dotenv_path)
+
+LOGGING_URL = os.getenv("LOGGING_URL")
+LOCATION = os.getenv("LOCATION")
+CSV_URL = os.getenv("CSV_URL")
+DATA_DIR = os.getenv("DATA_DIR")
+RPI_NAME = os.getenv("RPI_NAME")
 
 # locid = 100
 
@@ -101,19 +108,35 @@ topic_name = "esp"
 #                       ,"mxcv": 9  
 #                       ,"mncvn": 10  
 #                       ,"mncv": 11}).text)
+# print(requests.post(LOGGING_URL,
+#                         data=str(received_data[0]) +
+#                       "," + LOCATION +
+#                       "," + str(int(time.time())) +
+#                       "," + str(received_data[1]) +
+#                       "," + str(received_data[2]) + 
+#                       "," + str(received_data[3]) +
+#                       "," + str(received_data[4]) + 
+#                       "," + str(received_data[5]) + 
+#                       "," + str(received_data[6]) + 
+#                       "," + str(received_data[7]) + 
+#                       "," + str(received_data[8]) + 
+#                       "," + str(received_data[9]) + 
+#                       "," + str(received_data[10]) +
+#                       "," + str(received_data[11]) + 
+#                       "," + str(received_data[12]),headers={'Content-Type': 'text/plain'}).text)
 print(requests.post(LOGGING_URL,
-                        data=str(received_data[0]) +
+                        data=str(999) +
                       "," + LOCATION +
                       "," + str(int(time.time())) +
-                      "," + str(received_data[1]) +
-                      "," + str(received_data[2]) + 
-                      "," + str(received_data[3]) +
-                      "," + str(received_data[4]) + 
-                      "," + str(received_data[5]) + 
-                      "," + str(received_data[6]) + 
-                      "," + str(received_data[7]) + 
-                      "," + str(received_data[8]) + 
-                      "," + str(received_data[9]) + 
-                      "," + str(received_data[10]) +
-                      "," + str(received_data[11]) + 
-                      "," + str(received_data[12])).text)
+                      "," + str(54.2) +
+                      "," + str(-10) + 
+                      "," + str(50.0) +
+                      "," + str(33.3) + 
+                      "," + str(33.3) + 
+                      "," + str(33.3) + 
+                      "," + str(1) + 
+                      "," + str(1) + 
+                      "," + str(4.43) + 
+                      "," + str(13) +
+                      "," + str(4.40) + 
+                      "," + str(1),headers={'Content-Type': 'text/plain'}).text)

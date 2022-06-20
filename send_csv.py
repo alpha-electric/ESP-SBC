@@ -7,6 +7,11 @@ from pathlib import Path
 dotenv_path = Path("/home/pi/ESP-SBC/iot.env")
 load_dotenv(dotenv_path = dotenv_path)
 
+LOGGING_URL = os.getenv("LOGGING_URL")
+LOCATION = os.getenv("LOCATION")
+CSV_URL = os.getenv("CSV_URL")
+DATA_DIR = os.getenv("DATA_DIR")
+RPI_NAME = os.getenv("RPI_NAME")
 
 FileList = listdir(DATA_DIR)
 
