@@ -99,7 +99,7 @@ def get_gps_position():
 	else:
 		print('error %d'%answer)
 		rec_buff = ''
-		send_at('AT+CGPS=0','OK',1)
+		# send_at('AT+CGPS=0','OK',1)
 		
 def send_gps_backend():
     gps_url = GPS_LOGGING_URL +  str(FinalLat) + ',' + str(FinalLong) + ',' + str(speed) + ',' + str(LOCATION)
@@ -129,6 +129,6 @@ while True:
 		print("GPS disconnected")
 		gps_disconnected = True
 		gps_setup = False
-		time.sleep(60)
+		time.sleep(10)
 		
 	time.sleep(GPSDELAY) # send gps pos every 5 seconds
